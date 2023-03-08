@@ -12,3 +12,11 @@ export const getKernel = (): Kernel => {
 
     return instance.kernel
 }
+
+export const setKernel = (kernel: Kernel): void => {
+    if (instance.kernel) {
+        throw new Error('Kernel has already been instanced !');
+    }
+
+    instance.kernel = kernel
+}

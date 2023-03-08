@@ -10,5 +10,7 @@ export declare class Manifest implements Interface {
     normalize(): ManifestNormalized;
     denormalize(data: ManifestNormalized): this;
 }
-export interface ManifestNormalized extends Record<string, string> {
+export interface ManifestNormalized {
+    data: Record<string, string>;
+    endpoint: string;
 }

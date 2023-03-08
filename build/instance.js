@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getKernel = void 0;
+exports.setKernel = exports.getKernel = void 0;
 class Instance {
     kernel = null;
 }
@@ -12,3 +12,10 @@ const getKernel = () => {
     return instance.kernel;
 };
 exports.getKernel = getKernel;
+const setKernel = (kernel) => {
+    if (instance.kernel) {
+        throw new Error('Kernel has already been instanced !');
+    }
+    instance.kernel = kernel;
+};
+exports.setKernel = setKernel;

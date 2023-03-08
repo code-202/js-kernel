@@ -19,5 +19,17 @@ class Kernel {
     get manifest() {
         return this._manifest;
     }
+    normalize() {
+        return {
+            container: this.container.normalize(),
+            environment: this.environment.normalize(),
+            manifest: this.manifest.normalize(),
+        };
+    }
+    denormalize(data) {
+        this.container.denormalize(data.container);
+        this.environment.denormalize(data.environment);
+        this.manifest.denormalize(data.manifest);
+    }
 }
 exports.Kernel = Kernel;

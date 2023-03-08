@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Manifest = exports.Kernel = exports.Environment = exports.Container = exports.getKernel = void 0;
-const instance_1 = require("./instance");
-Object.defineProperty(exports, "getKernel", { enumerable: true, get: function () { return instance_1.getKernel; } });
+exports.setKernel = exports.Manifest = exports.Kernel = exports.getKernel = exports.Environment = exports.Container = void 0;
 const container_1 = require("./container");
 Object.defineProperty(exports, "Container", { enumerable: true, get: function () { return container_1.Container; } });
 const environment_1 = require("./environment");
 Object.defineProperty(exports, "Environment", { enumerable: true, get: function () { return environment_1.Environment; } });
+const instance_1 = require("./instance");
+Object.defineProperty(exports, "getKernel", { enumerable: true, get: function () { return instance_1.getKernel; } });
+Object.defineProperty(exports, "setKernel", { enumerable: true, get: function () { return instance_1.setKernel; } });
 const kernel_1 = require("./kernel");
 Object.defineProperty(exports, "Kernel", { enumerable: true, get: function () { return kernel_1.Kernel; } });
 const manifest_1 = require("./manifest");

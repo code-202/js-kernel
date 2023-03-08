@@ -15,12 +15,16 @@ class Manifest {
         }
     }
     normalize() {
-        return this._data;
+        return {
+            data: this._data,
+            endpoint: this.endpoint,
+        };
     }
     denormalize(data) {
-        for (const key in data) {
-            this._data[key] = data[key];
+        for (const key in data.data) {
+            this._data[key] = data.data[key];
         }
+        this.endpoint = data.endpoint;
         return this;
     }
 }
