@@ -30,3 +30,28 @@ test('undefined', () => {
 
     expect(environment.get('API_KEY')).toBeUndefined()
 })
+
+test('normalize', () => {
+    expect.assertions(1)
+
+    expect(environment.normalize()).toStrictEqual({
+        'ENDPOINT': 'https://the-endpoint',
+        'DEBUG': 'false',
+        'VERBOSITY': 'true',
+    })
+})
+
+test('denormalize', () => {
+    expect.assertions(4)
+
+    environment.denormalize({
+        'ENDPOINT': 'https://the-endpoint-modified',
+        'DEBUG': 'true',
+        'API_KEY': '1234567890',
+    })
+
+    expect(environment.get('ENDPOINT')).toBe('https://the-endpoint-modified')
+    expect(environment.get('DEBUG')).toBe('true')
+    expect(environment.get('VERBOSITY')).toBe('true')
+    expect(environment.get('API_KEY')).toBe('1234567890')
+})

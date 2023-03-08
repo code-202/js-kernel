@@ -1,6 +1,6 @@
 {
   "name": "@code-202/kernel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "build/index.js",
   "typings": "build/index",
   "repository": "git@github.com:code-202/js-kernel.git",
@@ -27,6 +27,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@code-202/serializer": "^1.0.0",
     "lodash.has": "^4.5.2",
     "mobx": "^6.8.0"
   }

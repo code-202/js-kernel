@@ -1,3 +1,6 @@
+import { Denormalizable, Normalizable } from "@code-202/serializer"
+import { forOwn } from "lodash"
+
 export interface Interface {
     get(): string
 }
@@ -43,4 +46,30 @@ export class ServiceC  implements Interface {
         }
         return s
     }
+}
+
+export class NormalizableService implements Normalizable<NormalizableServiceNormalized>, Denormalizable<NormalizableServiceNormalized> {
+    public foo: string
+    public bar: number
+    constructor (foo: string, bar: number) {
+        this.foo = foo
+        this.bar = bar
+    }
+
+    public normalize (): NormalizableServiceNormalized {
+        return {
+            foo: this.foo,
+            bar: this.bar,
+        }
+    }
+
+    public denormalize(data: NormalizableServiceNormalized) {
+        this.foo = data.foo
+        this.bar = data.bar
+    }
+}
+
+export interface NormalizableServiceNormalized {
+    foo: string
+    bar: number
 }

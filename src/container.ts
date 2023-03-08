@@ -1,5 +1,6 @@
 import { makeObservable, action, observable, computed } from 'mobx'
 import { has } from 'lodash'
+import { Normalizable, Denormalizable, Normalizer, Denormalizer } from '@code-202/serializer'
 
 export interface Factory {
     readonly key: string
@@ -9,7 +10,7 @@ export interface Factory {
 
 type Initiator = () => void
 
-export interface Interface {
+export interface Interface extends Normalizable<ContainerNormalized>, Denormalizable<ContainerNormalized> {
     add (key: string, service: any, aliases?: string[]): this
     has (key: string): boolean
     get (key: string): any | undefined
@@ -25,9 +26,6 @@ export interface Interface {
 
     onInit (callback: Initiator): this
     init (): this
-
-    serialize (): Record<string, any>
-    deserialize (data: Record<string, any>): this
 }
 
 export class Container implements Interface
@@ -58,8 +56,9 @@ export class Container implements Interface
 
         this.services[key] = service
 
-        if (typeof service.deserialize === 'function' && this._initializeData[key]) {
-            service.deserialize(this._initializeData[key])
+        const denormalizer = new Denormalizer()
+        if (denormalizer.isDenormalizable(service) && this._initializeData[key]) {
+            service.denormalize(this._initializeData[key])
         }
 
         if (typeof service.initialization === 'function') {
@@ -248,28 +247,33 @@ export class Container implements Interface
         return this
     }
 
-    serialize (): Record<string, any> {
-        const s: Record<string, any> = {}
+    public normalize (): ContainerNormalized {
+        const s: ContainerNormalized = {}
+        const normalizer = new Normalizer()
         for (const key in this.services) {
-            const store = this.services[key]
-            if (typeof store.serialize === 'function') {
-                s[key] = store.serialize()
+            const service = this.services[key]
+
+            if (normalizer.isNormalizable(service)) {
+                s[key] = service.normalize()
             }
         }
 
         return s
     }
 
-    deserialize (data: Record<string, any>): this {
+    public denormalize (data: ContainerNormalized): this {
         this._initializeData = data
+        const denormalizer = new Denormalizer()
         for (const key in this.services) {
-            const store = this.services[key]
+            const service = this.services[key]
 
-            if (typeof store.deserialize === 'function' && data[key]) {
-                store.deserialize(data[key])
+            if (denormalizer.isDenormalizable(service) && data[key]) {
+                service.denormalize(data[key])
             }
         }
 
         return this
     }
 }
+
+export interface ContainerNormalized extends Record<string, any> {}

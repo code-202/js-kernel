@@ -1,25 +1,24 @@
+import { Normalizable, Denormalizable } from '@code-202/serializer';
 export interface Factory {
     readonly key: string;
-    readonly dependencies: string[];
+    readonly dependencies?: string[];
     create(...dependencies: any[]): any;
 }
 type Initiator = () => void;
-export interface Interface {
+export interface Interface extends Normalizable<ContainerNormalized>, Denormalizable<ContainerNormalized> {
+    add(key: string, service: any, aliases?: string[]): this;
     has(key: string): boolean;
     get(key: string): any | undefined;
     ready(key: string): boolean;
     readonly keys: string[];
-    addService(key: string, service: any, aliases: string[]): this;
     addAlias(alias: string, key: string): this;
     getAlias(alias: string): string | undefined;
     addFactories(factories: Factory[]): this;
-    addFactory(factory: Factory, aliases: string[]): this;
+    addFactory(factory: Factory, aliases?: string[]): this;
     hasFactory(key: string): boolean;
     getFactory(key: string): Factory | undefined;
     onInit(callback: Initiator): this;
     init(): this;
-    serialize(): Record<string, any>;
-    deserialize(data: Record<string, any>): this;
 }
 export declare class Container implements Interface {
     services: Record<string, any>;
@@ -28,7 +27,7 @@ export declare class Container implements Interface {
     private initiators;
     private _initializeData;
     constructor();
-    addService(key: string, service: any, aliases?: string[]): this;
+    add(key: string, service: any, aliases?: string[]): this;
     has(key: string): boolean;
     get(key: string): any | undefined;
     protected _get(key: string, parents: string[]): any | undefined;
@@ -37,12 +36,14 @@ export declare class Container implements Interface {
     addAlias(alias: string, key: string): this;
     getAlias(alias: string): string | undefined;
     addFactories(factories: Factory[]): this;
-    addFactory(factory: Factory): this;
+    addFactory(factory: Factory, aliases?: string[]): this;
     hasFactory(key: string): boolean;
     getFactory(key: string): Factory | undefined;
     onInit(callback: Initiator): this;
     init(): this;
-    serialize(): Record<string, any>;
-    deserialize(data: Record<string, any>): this;
+    normalize(): ContainerNormalized;
+    denormalize(data: ContainerNormalized): this;
+}
+export interface ContainerNormalized extends Record<string, any> {
 }
 export {};

@@ -1,6 +1,6 @@
 import { test, expect, afterAll, beforeAll } from '@jest/globals'
 import { Container } from '../src'
-import { Interface, ServiceA, ServiceB, ServiceC } from './services'
+import { Interface, NormalizableService, ServiceA, ServiceB, ServiceC } from './services'
 
 let container: Container = new Container()
 
@@ -225,4 +225,33 @@ test('add alias', () => {
     expect(() => container.addAlias('alias.a.1', 'service.a.1')).toThrow('Alias alias.a.1 is already defined : service.a.1')
     expect(() => container.addAlias('service.a.1', 'service.a.2')).toThrow('Alias service.a.1 is already defined')
     expect(() => container.addAlias('alias', 'unknown')).toThrow('Service or factory unknown is undefined')
+})
+
+test('normalize', () => {
+    expect.assertions(2)
+
+    expect(container.normalize()).toStrictEqual({})
+
+    container.add('service.n.1', new NormalizableService('hello', 42))
+    expect(container.normalize()).toStrictEqual({
+        'service.n.1': {
+            foo: 'hello',
+            bar: 42,
+        }
+    })
+})
+
+test('denormalize', () => {
+    expect.assertions(2)
+
+    container.add('service.n.2', new NormalizableService('hello', 42))
+    container.denormalize({
+        'service.n.2': {
+            foo: 'bye',
+            bar: 22,
+        }
+    })
+
+    expect(container.get('service.n.2').foo).toBe('bye')
+    expect(container.get('service.n.2').bar).toBe(22)
 })
