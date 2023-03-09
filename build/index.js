@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setKernel = exports.Manifest = exports.Kernel = exports.getKernel = exports.Environment = exports.Container = void 0;
+exports.setKernel = exports.Manifest = exports.Kernel = exports.getKernel = exports.Environment = exports.createEmptyKernel = exports.Container = void 0;
 const container_1 = require("./container");
 Object.defineProperty(exports, "Container", { enumerable: true, get: function () { return container_1.Container; } });
+const default_1 = require("./default");
+Object.defineProperty(exports, "createEmptyKernel", { enumerable: true, get: function () { return default_1.createEmptyKernel; } });
 const environment_1 = require("./environment");
 Object.defineProperty(exports, "Environment", { enumerable: true, get: function () { return environment_1.Environment; } });
 const instance_1 = require("./instance");
