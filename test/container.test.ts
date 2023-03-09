@@ -1,8 +1,8 @@
 import { test, expect, afterAll, beforeAll } from '@jest/globals'
-import { Container } from '../src'
+import { Container, ContainerComponent  } from '../src'
 import { Interface, NormalizableService, ServiceA, ServiceB, ServiceC } from './services'
 
-let container: Container.Container = new Container.Container()
+let container: Container = new Container()
 
 test('service.a.1', () => {
     expect.assertions(8)
@@ -133,8 +133,8 @@ test('auto dependence', () => {
     container.addFactory(factoryB7)
 
     expect(() => container.get('service.b.7')).toThrow('Auto dependence : service.b.7 => service.b.7')
-    expect(() => container.get('service.b.7')).toThrow(Container.ContainerError)
-    expect(() => container.get('service.b.7')).toThrow(Container.AutoDependenceError)
+    expect(() => container.get('service.b.7')).toThrow(ContainerComponent.ContainerError)
+    expect(() => container.get('service.b.7')).toThrow(ContainerComponent.AutoDependenceError)
 })
 
 
@@ -150,8 +150,8 @@ test('auto dependence by alias', () => {
     container.addFactory(factoryB8, ['alias.b.8'])
 
     expect(() => container.get('service.b.8')).toThrow('Auto dependence : service.b.8 => service.b.8')
-    expect(() => container.get('service.b.8')).toThrow(Container.ContainerError)
-    expect(() => container.get('service.b.8')).toThrow(Container.AutoDependenceError)
+    expect(() => container.get('service.b.8')).toThrow(ContainerComponent.ContainerError)
+    expect(() => container.get('service.b.8')).toThrow(ContainerComponent.AutoDependenceError)
 })
 
 test('circular dependencies', () => {
@@ -174,8 +174,8 @@ test('circular dependencies', () => {
 
     expect(() => container.get('alias.b.9')).toThrow('Cirular dependencies : service.b.9 -> service.b.10 => service.b.9')
     expect(() => container.get('service.b.10')).toThrow('Cirular dependencies : service.b.10 -> service.b.9 => service.b.10')
-    expect(() => container.get('service.b.10')).toThrow(Container.ContainerError)
-    expect(() => container.get('service.b.10')).toThrow(Container.CircularDependenciesError)
+    expect(() => container.get('service.b.10')).toThrow(ContainerComponent.ContainerError)
+    expect(() => container.get('service.b.10')).toThrow(ContainerComponent.CircularDependenciesError)
 })
 
 test('no dependency', () => {
@@ -190,8 +190,8 @@ test('no dependency', () => {
     container.addFactory(factoryB11)
 
     expect(() => container.get('service.b.11')).toThrow('No dependency : service.b.11 => unknown (undefined)')
-    expect(() => container.get('service.b.11')).toThrow(Container.ContainerError)
-    expect(() => container.get('service.b.11')).toThrow(Container.NoDependencyError)
+    expect(() => container.get('service.b.11')).toThrow(ContainerComponent.ContainerError)
+    expect(() => container.get('service.b.11')).toThrow(ContainerComponent.NoDependencyError)
 })
 
 test('already defined', () => {
@@ -222,8 +222,8 @@ test('already defined', () => {
     expect(() => container.add('service.a.1', new ServiceA('doublon'))).toThrow('Service service.a.1 is already defined')
     expect(() => container.add('alias.a.1', new ServiceA('doublon'))).toThrow('Service alias.a.1 is already defined')
     expect(() => container.add('service.a.12', new ServiceA('doublon'))).toThrow('Service service.a.12 is already defined')
-    expect(() => container.add('service.a.12', new ServiceA('doublon'))).toThrow(Container.ContainerError)
-    expect(() => container.add('service.a.12', new ServiceA('doublon'))).toThrow(Container.ServiceAlreadyDefinedError)
+    expect(() => container.add('service.a.12', new ServiceA('doublon'))).toThrow(ContainerComponent.ContainerError)
+    expect(() => container.add('service.a.12', new ServiceA('doublon'))).toThrow(ContainerComponent.ServiceAlreadyDefinedError)
     expect(() => container.addFactory(factoryA13)).toThrow('Service service.a.1 is already defined')
     expect(() => container.addFactory(factoryA14)).toThrow('Service alias.a.1 is already defined')
     expect(() => container.addFactory(factoryA15)).toThrow('Service service.a.12 is already defined')
@@ -235,8 +235,8 @@ test('add alias', () => {
     expect(() => container.addAlias('alias.a.1', 'service.a.1')).toThrow('Alias alias.a.1 is already defined : service.a.1')
     expect(() => container.addAlias('service.a.1', 'service.a.2')).toThrow('Alias service.a.1 is already defined')
     expect(() => container.addAlias('alias', 'unknown')).toThrow('Service or factory unknown is undefined')
-    expect(() => container.addAlias('alias', 'unknown')).toThrow(Container.ContainerError)
-    expect(() => container.addAlias('alias', 'unknown')).toThrow(Container.NoServiceError)
+    expect(() => container.addAlias('alias', 'unknown')).toThrow(ContainerComponent.ContainerError)
+    expect(() => container.addAlias('alias', 'unknown')).toThrow(ContainerComponent.NoServiceError)
 })
 
 test('normalize', () => {
