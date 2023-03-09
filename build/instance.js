@@ -12,8 +12,8 @@ const getKernel = () => {
     return instance.kernel;
 };
 exports.getKernel = getKernel;
-const setKernel = (kernel) => {
-    if (instance.kernel) {
+const setKernel = (kernel, force = false) => {
+    if (!force && instance.kernel) {
         throw new Error('Kernel has already been instanced !');
     }
     instance.kernel = kernel;
