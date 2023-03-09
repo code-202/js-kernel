@@ -2,7 +2,7 @@ import { Denormalizable, Normalizable } from '@code-202/serializer'
 import { has } from 'lodash'
 
 export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
-    get (key: string, absolute: boolean): string | undefined
+    get (key: string, absolute?: boolean): string | undefined
 }
 
 export class Manifest implements Interface {

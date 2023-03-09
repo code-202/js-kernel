@@ -244,9 +244,9 @@ test('normalize', () => {
 
     expect(container.normalize()).toStrictEqual({})
 
-    container.add('service.n.1', new NormalizableService('hello', 42))
+    container.add('service.n.16', new NormalizableService('hello', 42))
     expect(container.normalize()).toStrictEqual({
-        'service.n.1': {
+        'service.n.16': {
             foo: 'hello',
             bar: 42,
         }
@@ -256,14 +256,48 @@ test('normalize', () => {
 test('denormalize', () => {
     expect.assertions(2)
 
-    container.add('service.n.2', new NormalizableService('hello', 42))
+    container.add('service.n.17', new NormalizableService('hello', 42))
     container.denormalize({
-        'service.n.2': {
+        'service.n.17': {
             foo: 'bye',
             bar: 22,
         }
     })
 
-    expect(container.get('service.n.2').foo).toBe('bye')
-    expect(container.get('service.n.2').bar).toBe(22)
+    expect(container.get('service.n.17').foo).toBe('bye')
+    expect(container.get('service.n.17').bar).toBe(22)
+})
+
+test('denormalize after add factories', () => {
+    expect.assertions(2)
+
+    const factoryN18 = {
+        key: 'service.n.18',
+        create : () => new NormalizableService('bonjour', 40)
+    }
+
+    const factoryB19 = {
+        key: 'service.b.19',
+        dependencies: ['service.n.18'],
+        create : (s: Interface) => new ServiceB('service.b.19', s)
+    }
+
+    container.addFactories([factoryN18, factoryB19])
+
+    container.onInit(() => {
+        container.get('service.n.18').bar = 60
+    })
+
+    container.denormalize({
+        'service.n.18': {
+            foo: 'bonsoir',
+            bar: 50,
+        }
+    })
+
+    expect(container.get('service.b.19').get()).toBe('service.b.19|bonsoir50')
+
+    container.init()
+
+    expect(container.get('service.b.19').get()).toBe('service.b.19|bonsoir60')
 })

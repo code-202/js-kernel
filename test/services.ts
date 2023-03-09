@@ -48,7 +48,7 @@ export class ServiceC  implements Interface {
     }
 }
 
-export class NormalizableService implements Normalizable<NormalizableServiceNormalized>, Denormalizable<NormalizableServiceNormalized> {
+export class NormalizableService implements Interface, Normalizable<NormalizableServiceNormalized>, Denormalizable<NormalizableServiceNormalized> {
     public foo: string
     public bar: number
     constructor (foo: string, bar: number) {
@@ -66,6 +66,10 @@ export class NormalizableService implements Normalizable<NormalizableServiceNorm
     public denormalize(data: NormalizableServiceNormalized) {
         this.foo = data.foo
         this.bar = data.bar
+    }
+
+    public get (): string {
+        return this.foo + this.bar
     }
 }
 
