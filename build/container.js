@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Container = void 0;
+exports.ServiceAlreadyDefinedError = exports.NoServiceError = exports.NoDependencyError = exports.CircularDependenciesError = exports.AutoDependenceError = exports.AliasAlreadyDefinedError = exports.ContainerError = exports.Container = void 0;
 const mobx_1 = require("mobx");
 const lodash_1 = require("lodash");
 const serializer_1 = require("@code-202/serializer");
+const kernel_1 = require("./kernel");
 class Container {
     services = {};
     aliases = {};
@@ -22,7 +23,7 @@ class Container {
     }
     add(key, service, aliases) {
         if (this.has(key)) {
-            throw new Error('Service ' + key + ' is already defined');
+            throw new ServiceAlreadyDefinedError('Service ' + key + ' is already defined');
         }
         this.services[key] = service;
         const denormalizer = new serializer_1.Denormalizer();
@@ -55,7 +56,7 @@ class Container {
         }
         const factory = this.getFactory(key);
         if (factory === undefined) {
-            return undefined;
+            throw new NoServiceError('Service does not exist and there is no factory to create it : ' + key);
         }
         const dependencies = [];
         if (factory.dependencies) {
@@ -66,16 +67,21 @@ class Container {
                     dependency = aliasDependency;
                 }
                 if (dependency === factory.key) {
-                    throw new Error('Auto dependence : ' + factory.key + ' => ' + dependency);
+                    throw new AutoDependenceError('Auto dependence : ' + factory.key + ' => ' + dependency);
                 }
                 if (parents.indexOf(dependency) >= 0) {
-                    throw new Error('Cirular dependencies : ' + parents.join(' -> ') + ' -> ' + factory.key + ' => ' + dependency);
+                    throw new CircularDependenciesError('Cirular dependencies : ' + parents.join(' -> ') + ' -> ' + factory.key + ' => ' + dependency);
                 }
-                const d = this._get(dependency, parents.concat([factory.key]));
-                if (d === undefined) {
-                    throw new Error('No dependency : ' + factory.key + ' => ' + dependency + ' (undefined)');
+                try {
+                    const d = this._get(dependency, parents.concat([factory.key]));
+                    dependencies.push(d);
                 }
-                dependencies.push(d);
+                catch (error) {
+                    if (error instanceof NoServiceError) {
+                        throw new NoDependencyError('No dependency : ' + factory.key + ' => ' + dependency + ' (undefined)');
+                    }
+                    throw error;
+                }
             }
         }
         const service = factory.create(...dependencies);
@@ -109,13 +115,13 @@ class Container {
     }
     addAlias(alias, key) {
         if ((0, lodash_1.has)(this.aliases, alias)) {
-            throw new Error('Alias ' + alias + ' is already defined : ' + this.getAlias(alias));
+            throw new AliasAlreadyDefinedError('Alias ' + alias + ' is already defined : ' + this.getAlias(alias));
         }
         if (this.has(alias)) {
-            throw new Error('Alias ' + alias + ' is already defined');
+            throw new AliasAlreadyDefinedError('Alias ' + alias + ' is already defined');
         }
         if (!(0, lodash_1.has)(this.services, key) && !this.hasFactory(key)) {
-            throw new Error('Service or factory ' + key + ' is undefined');
+            throw new NoServiceError('Service or factory ' + key + ' is undefined');
         }
         this.aliases[alias] = key;
         return this;
@@ -133,7 +139,7 @@ class Container {
     }
     addFactory(factory, aliases) {
         if (this.has(factory.key)) {
-            throw new Error('Service ' + factory.key + ' is already defined');
+            throw new ServiceAlreadyDefinedError('Service ' + factory.key + ' is already defined');
         }
         this.factories.push(factory);
         if (aliases) {
@@ -192,3 +198,24 @@ class Container {
     }
 }
 exports.Container = Container;
+class ContainerError extends kernel_1.KernelError {
+}
+exports.ContainerError = ContainerError;
+class AliasAlreadyDefinedError extends ContainerError {
+}
+exports.AliasAlreadyDefinedError = AliasAlreadyDefinedError;
+class AutoDependenceError extends ContainerError {
+}
+exports.AutoDependenceError = AutoDependenceError;
+class CircularDependenciesError extends ContainerError {
+}
+exports.CircularDependenciesError = CircularDependenciesError;
+class NoDependencyError extends ContainerError {
+}
+exports.NoDependencyError = NoDependencyError;
+class NoServiceError extends ContainerError {
+}
+exports.NoServiceError = NoServiceError;
+class ServiceAlreadyDefinedError extends ContainerError {
+}
+exports.ServiceAlreadyDefinedError = ServiceAlreadyDefinedError;

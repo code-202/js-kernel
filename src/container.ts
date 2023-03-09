@@ -1,6 +1,7 @@
 import { makeObservable, action, observable, computed } from 'mobx'
 import { has } from 'lodash'
 import { Normalizable, Denormalizable, Normalizer, Denormalizer } from '@code-202/serializer'
+import { KernelError } from './kernel'
 
 export interface Factory {
     readonly key: string
@@ -8,12 +9,12 @@ export interface Factory {
     create(...dependencies: any[]): any
 }
 
-type Initiator = () => void
+export type Initiator = () => void
 
-export interface Interface extends Normalizable<ContainerNormalized>, Denormalizable<ContainerNormalized> {
+export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
     add (key: string, service: any, aliases?: string[]): this
     has (key: string): boolean
-    get (key: string): any | undefined
+    get (key: string): any
     ready (key: string): boolean
     readonly keys: string[]
     addAlias (alias: string, key: string): this
@@ -51,7 +52,7 @@ export class Container implements Interface
 
     add (key: string, service: any, aliases?: string[]): this {
         if (this.has(key)) {
-            throw new Error('Service ' + key + ' is already defined')
+            throw new ServiceAlreadyDefinedError('Service ' + key + ' is already defined')
         }
 
         this.services[key] = service
@@ -78,11 +79,11 @@ export class Container implements Interface
         return this.keys.indexOf(key) >= 0
     }
 
-    get (key: string): any | undefined {
+    get (key: string): any {
         return this._get(key, [])
     }
 
-    protected _get (key: string, parents: string[]): any | undefined{
+    protected _get (key: string, parents: string[]): any {
 
         const alias = this.getAlias(key)
 
@@ -96,7 +97,7 @@ export class Container implements Interface
 
         const factory = this.getFactory(key)
         if (factory === undefined) {
-            return undefined
+            throw new NoServiceError('Service does not exist and there is no factory to create it : ' + key)
         }
 
         const dependencies: any[] = []
@@ -111,19 +112,21 @@ export class Container implements Interface
                 }
 
                 if (dependency === factory.key) {
-                    throw new Error('Auto dependence : ' + factory.key + ' => ' + dependency)
+                    throw new AutoDependenceError('Auto dependence : ' + factory.key + ' => ' + dependency)
                 }
                 if (parents.indexOf(dependency) >= 0) {
-                    throw new Error('Cirular dependencies : ' + parents.join(' -> ') + ' -> ' + factory.key + ' => ' + dependency)
+                    throw new CircularDependenciesError('Cirular dependencies : ' + parents.join(' -> ') + ' -> ' + factory.key + ' => ' + dependency)
                 }
 
-                const d = this._get(dependency, parents.concat([factory.key]))
-
-                if (d === undefined) {
-                    throw new Error('No dependency : ' + factory.key + ' => ' + dependency + ' (undefined)')
+                try {
+                    const d = this._get(dependency, parents.concat([factory.key]))
+                    dependencies.push(d)
+                } catch (error) {
+                    if (error instanceof NoServiceError) {
+                        throw new NoDependencyError('No dependency : ' + factory.key + ' => ' + dependency + ' (undefined)')
+                    }
+                    throw error
                 }
-
-                dependencies.push(d)
             }
         }
 
@@ -169,15 +172,15 @@ export class Container implements Interface
 
     addAlias (alias: string, key: string): this {
         if (has(this.aliases, alias)) {
-            throw new Error('Alias ' + alias + ' is already defined : ' + this.getAlias(alias))
+            throw new AliasAlreadyDefinedError('Alias ' + alias + ' is already defined : ' + this.getAlias(alias))
         }
 
         if (this.has(alias)) {
-            throw new Error('Alias ' + alias + ' is already defined')
+            throw new AliasAlreadyDefinedError('Alias ' + alias + ' is already defined')
         }
 
         if (!has(this.services, key) && !this.hasFactory(key)) {
-            throw new Error('Service or factory ' + key + ' is undefined')
+            throw new NoServiceError('Service or factory ' + key + ' is undefined')
         }
 
         this.aliases[alias] = key
@@ -201,7 +204,7 @@ export class Container implements Interface
 
     addFactory (factory: Factory, aliases?: string[]): this {
         if (this.has(factory.key)) {
-            throw new Error('Service ' + factory.key + ' is already defined')
+            throw new ServiceAlreadyDefinedError('Service ' + factory.key + ' is already defined')
         }
 
         this.factories.push(factory)
@@ -247,8 +250,8 @@ export class Container implements Interface
         return this
     }
 
-    public normalize (): ContainerNormalized {
-        const s: ContainerNormalized = {}
+    public normalize (): Normalized {
+        const s: Normalized = {}
         const normalizer = new Normalizer()
         for (const key in this.services) {
             const service = this.services[key]
@@ -261,7 +264,7 @@ export class Container implements Interface
         return s
     }
 
-    public denormalize (data: ContainerNormalized): this {
+    public denormalize (data: Normalized): this {
         this._initializeData = data
         const denormalizer = new Denormalizer()
         for (const key in this.services) {
@@ -276,4 +279,13 @@ export class Container implements Interface
     }
 }
 
-export interface ContainerNormalized extends Record<string, any> {}
+export interface Normalized extends Record<string, any> {}
+
+export class ContainerError extends KernelError {}
+
+export class AliasAlreadyDefinedError extends ContainerError {}
+export class AutoDependenceError extends ContainerError {}
+export class CircularDependenciesError extends ContainerError {}
+export class NoDependencyError extends ContainerError {}
+export class NoServiceError extends ContainerError {}
+export class ServiceAlreadyDefinedError extends ContainerError {}

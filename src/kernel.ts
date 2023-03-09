@@ -3,7 +3,7 @@ import * as Container from './container'
 import * as Environment from './environment'
 import * as Manifest from './manifest'
 
-export class Kernel implements Normalizable<KernelNormalized>, Denormalizable<KernelNormalized>{
+export class Kernel implements Normalizable<Normalized>, Denormalizable<Normalized>{
     private _container: Container.Interface
     private _environment: Environment.Interface
     private _manifest: Manifest.Interface
@@ -33,7 +33,7 @@ export class Kernel implements Normalizable<KernelNormalized>, Denormalizable<Ke
         return this._manifest
     }
 
-    public normalize(): KernelNormalized {
+    public normalize(): Normalized {
         return {
             container: this.container.normalize(),
             environment: this.environment.normalize(),
@@ -41,15 +41,17 @@ export class Kernel implements Normalizable<KernelNormalized>, Denormalizable<Ke
         }
     }
 
-    public denormalize(data: KernelNormalized) {
+    public denormalize(data: Normalized) {
         this.container.denormalize(data.container)
         this.environment.denormalize(data.environment)
         this.manifest.denormalize(data.manifest)
     }
 }
 
-export interface KernelNormalized {
-    container: Container.ContainerNormalized
-    environment: Environment.EnvironmentNormalized
-    manifest: Manifest.ManifestNormalized
+export interface Normalized {
+    container: Container.Normalized
+    environment: Environment.Normalized
+    manifest: Manifest.Normalized
 }
+
+export class KernelError extends Error {}

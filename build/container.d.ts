@@ -1,14 +1,15 @@
 import { Normalizable, Denormalizable } from '@code-202/serializer';
+import { KernelError } from './kernel';
 export interface Factory {
     readonly key: string;
     readonly dependencies?: string[];
     create(...dependencies: any[]): any;
 }
-type Initiator = () => void;
-export interface Interface extends Normalizable<ContainerNormalized>, Denormalizable<ContainerNormalized> {
+export type Initiator = () => void;
+export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
     add(key: string, service: any, aliases?: string[]): this;
     has(key: string): boolean;
-    get(key: string): any | undefined;
+    get(key: string): any;
     ready(key: string): boolean;
     readonly keys: string[];
     addAlias(alias: string, key: string): this;
@@ -29,8 +30,8 @@ export declare class Container implements Interface {
     constructor();
     add(key: string, service: any, aliases?: string[]): this;
     has(key: string): boolean;
-    get(key: string): any | undefined;
-    protected _get(key: string, parents: string[]): any | undefined;
+    get(key: string): any;
+    protected _get(key: string, parents: string[]): any;
     ready(key: string): boolean;
     get keys(): string[];
     addAlias(alias: string, key: string): this;
@@ -41,9 +42,22 @@ export declare class Container implements Interface {
     getFactory(key: string): Factory | undefined;
     onInit(callback: Initiator): this;
     init(): this;
-    normalize(): ContainerNormalized;
-    denormalize(data: ContainerNormalized): this;
+    normalize(): Normalized;
+    denormalize(data: Normalized): this;
 }
-export interface ContainerNormalized extends Record<string, any> {
+export interface Normalized extends Record<string, any> {
 }
-export {};
+export declare class ContainerError extends KernelError {
+}
+export declare class AliasAlreadyDefinedError extends ContainerError {
+}
+export declare class AutoDependenceError extends ContainerError {
+}
+export declare class CircularDependenciesError extends ContainerError {
+}
+export declare class NoDependencyError extends ContainerError {
+}
+export declare class NoServiceError extends ContainerError {
+}
+export declare class ServiceAlreadyDefinedError extends ContainerError {
+}

@@ -8,10 +8,10 @@ const env = {
     'DEBUG': 'false',
 }
 
-let environment: Environment<KEYS>
+let environment: Environment.Environment<KEYS>
 
 beforeAll(() => {
-    environment = new Environment<KEYS>({
+    environment = new Environment.Environment<KEYS>({
         'DEBUG': 'false',
         'VERBOSITY': 'true',
     }, env)

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Kernel = void 0;
+exports.KernelError = exports.Kernel = void 0;
 class Kernel {
     _container;
     _environment;
@@ -33,3 +33,6 @@ class Kernel {
     }
 }
 exports.Kernel = Kernel;
+class KernelError extends Error {
+}
+exports.KernelError = KernelError;

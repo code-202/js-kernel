@@ -2,7 +2,7 @@ import { test, expect, afterAll, beforeAll } from '@jest/globals'
 import { Container } from '../src'
 import { Interface, NormalizableService, ServiceA, ServiceB, ServiceC } from './services'
 
-let container: Container = new Container()
+let container: Container.Container = new Container.Container()
 
 test('service.a.1', () => {
     expect.assertions(8)
@@ -122,7 +122,7 @@ test('keys', () => {
 })
 
 test('auto dependence', () => {
-    expect.assertions(1)
+    expect.assertions(3)
 
     const factoryB7 = {
         key: 'service.b.7',
@@ -133,11 +133,13 @@ test('auto dependence', () => {
     container.addFactory(factoryB7)
 
     expect(() => container.get('service.b.7')).toThrow('Auto dependence : service.b.7 => service.b.7')
+    expect(() => container.get('service.b.7')).toThrow(Container.ContainerError)
+    expect(() => container.get('service.b.7')).toThrow(Container.AutoDependenceError)
 })
 
 
 test('auto dependence by alias', () => {
-    expect.assertions(1)
+    expect.assertions(3)
 
     const factoryB8 = {
         key: 'service.b.8',
@@ -148,10 +150,12 @@ test('auto dependence by alias', () => {
     container.addFactory(factoryB8, ['alias.b.8'])
 
     expect(() => container.get('service.b.8')).toThrow('Auto dependence : service.b.8 => service.b.8')
+    expect(() => container.get('service.b.8')).toThrow(Container.ContainerError)
+    expect(() => container.get('service.b.8')).toThrow(Container.AutoDependenceError)
 })
 
 test('circular dependencies', () => {
-    expect.assertions(2)
+    expect.assertions(4)
 
     const factoryB9 = {
         key: 'service.b.9',
@@ -170,10 +174,12 @@ test('circular dependencies', () => {
 
     expect(() => container.get('alias.b.9')).toThrow('Cirular dependencies : service.b.9 -> service.b.10 => service.b.9')
     expect(() => container.get('service.b.10')).toThrow('Cirular dependencies : service.b.10 -> service.b.9 => service.b.10')
+    expect(() => container.get('service.b.10')).toThrow(Container.ContainerError)
+    expect(() => container.get('service.b.10')).toThrow(Container.CircularDependenciesError)
 })
 
 test('no dependency', () => {
-    expect.assertions(1)
+    expect.assertions(3)
 
     const factoryB11 = {
         key: 'service.b.11',
@@ -184,10 +190,12 @@ test('no dependency', () => {
     container.addFactory(factoryB11)
 
     expect(() => container.get('service.b.11')).toThrow('No dependency : service.b.11 => unknown (undefined)')
+    expect(() => container.get('service.b.11')).toThrow(Container.ContainerError)
+    expect(() => container.get('service.b.11')).toThrow(Container.NoDependencyError)
 })
 
 test('already defined', () => {
-    expect.assertions(6)
+    expect.assertions(8)
 
     const factoryA12 = {
         key: 'service.a.12',
@@ -214,17 +222,21 @@ test('already defined', () => {
     expect(() => container.add('service.a.1', new ServiceA('doublon'))).toThrow('Service service.a.1 is already defined')
     expect(() => container.add('alias.a.1', new ServiceA('doublon'))).toThrow('Service alias.a.1 is already defined')
     expect(() => container.add('service.a.12', new ServiceA('doublon'))).toThrow('Service service.a.12 is already defined')
+    expect(() => container.add('service.a.12', new ServiceA('doublon'))).toThrow(Container.ContainerError)
+    expect(() => container.add('service.a.12', new ServiceA('doublon'))).toThrow(Container.ServiceAlreadyDefinedError)
     expect(() => container.addFactory(factoryA13)).toThrow('Service service.a.1 is already defined')
     expect(() => container.addFactory(factoryA14)).toThrow('Service alias.a.1 is already defined')
     expect(() => container.addFactory(factoryA15)).toThrow('Service service.a.12 is already defined')
 })
 
 test('add alias', () => {
-    expect.assertions(3)
+    expect.assertions(5)
 
     expect(() => container.addAlias('alias.a.1', 'service.a.1')).toThrow('Alias alias.a.1 is already defined : service.a.1')
     expect(() => container.addAlias('service.a.1', 'service.a.2')).toThrow('Alias service.a.1 is already defined')
     expect(() => container.addAlias('alias', 'unknown')).toThrow('Service or factory unknown is undefined')
+    expect(() => container.addAlias('alias', 'unknown')).toThrow(Container.ContainerError)
+    expect(() => container.addAlias('alias', 'unknown')).toThrow(Container.NoServiceError)
 })
 
 test('normalize', () => {

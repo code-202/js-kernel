@@ -1,13 +1,13 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer';
-export interface Interface extends Normalizable<EnvironmentNormalized>, Denormalizable<EnvironmentNormalized> {
+export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
     get(key: string): string | undefined;
 }
 export declare class Environment<K extends string> implements Interface {
     private data;
     constructor(defaults: Partial<Record<K, string>>, env: Record<string, string>);
     get(key: K): string | undefined;
-    normalize(): EnvironmentNormalized;
-    denormalize(data: EnvironmentNormalized): this;
+    normalize(): Normalized;
+    denormalize(data: Normalized): this;
 }
-export interface EnvironmentNormalized extends Partial<Record<string, string>> {
+export interface Normalized extends Partial<Record<string, string>> {
 }

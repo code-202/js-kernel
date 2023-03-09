@@ -1,7 +1,7 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
 import { has } from 'lodash'
 
-export interface Interface extends Normalizable<EnvironmentNormalized>, Denormalizable<EnvironmentNormalized> {
+export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
     get (key: string): string | undefined
 }
 
@@ -23,11 +23,11 @@ export class Environment<K extends string> implements Interface
         }
     }
 
-    public normalize (): EnvironmentNormalized {
+    public normalize (): Normalized {
         return this.data
     }
 
-    public denormalize (data: EnvironmentNormalized): this {
+    public denormalize (data: Normalized): this {
         for (const key in data) {
             this.data[key as K] = data[key]
         }
@@ -36,4 +36,4 @@ export class Environment<K extends string> implements Interface
     }
 }
 
-export interface EnvironmentNormalized extends Partial<Record<string, string>> {}
+export interface Normalized extends Partial<Record<string, string>> {}

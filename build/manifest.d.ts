@@ -1,5 +1,5 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer';
-export interface Interface extends Normalizable<ManifestNormalized>, Denormalizable<ManifestNormalized> {
+export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
     get(key: string, absolute: boolean): string | undefined;
 }
 export declare class Manifest implements Interface {
@@ -7,10 +7,10 @@ export declare class Manifest implements Interface {
     private endpoint;
     constructor(data: Record<string, string>, endpoint: string);
     get(key: string, absolute?: boolean): string | undefined;
-    normalize(): ManifestNormalized;
-    denormalize(data: ManifestNormalized): this;
+    normalize(): Normalized;
+    denormalize(data: Normalized): this;
 }
-export interface ManifestNormalized {
+export interface Normalized {
     data: Record<string, string>;
     endpoint: string;
 }

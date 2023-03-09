@@ -1,7 +1,7 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
 import { has } from 'lodash'
 
-export interface Interface extends Normalizable<ManifestNormalized>, Denormalizable<ManifestNormalized> {
+export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
     get (key: string, absolute: boolean): string | undefined
 }
 
@@ -22,14 +22,14 @@ export class Manifest implements Interface {
         }
     }
 
-    public normalize (): ManifestNormalized {
+    public normalize (): Normalized {
         return  {
             data: this._data,
             endpoint: this.endpoint,
         }
     }
 
-    public denormalize (data: ManifestNormalized): this {
+    public denormalize (data: Normalized): this {
         for (const key in data.data) {
             this._data[key] = data.data[key]
         }
@@ -40,7 +40,7 @@ export class Manifest implements Interface {
     }
 }
 
-export interface ManifestNormalized {
+export interface Normalized {
     data: Record<string, string>,
     endpoint: string,
 }
