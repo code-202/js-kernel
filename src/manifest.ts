@@ -3,7 +3,7 @@ import { has } from 'lodash'
 import { KernelError } from './kernel'
 
 export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
-    get (key: string, absolute?: boolean): string | undefined
+    get (key: string, absolute?: boolean): string
 }
 
 export class Manifest implements Interface {
