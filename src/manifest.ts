@@ -1,5 +1,6 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
 import { has } from 'lodash'
+import { KernelError } from './kernel'
 
 export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
     get (key: string, absolute?: boolean): string | undefined
@@ -15,11 +16,13 @@ export class Manifest implements Interface {
         this.endpoint = endpoint
     }
 
-    public get (key: string, absolute: boolean = true): string | undefined
+    public get (key: string, absolute: boolean = true): string
     {
         if (has(this._data, key)) {
             return (absolute ? this.endpoint : '') + this._data[key]
         }
+
+        throw new ManifestError(`${key} does not exists in the manifest`)
     }
 
     public normalize (): Normalized {
@@ -44,3 +47,5 @@ export interface Normalized {
     data: Record<string, string>,
     endpoint: string,
 }
+
+export class ManifestError extends KernelError {}

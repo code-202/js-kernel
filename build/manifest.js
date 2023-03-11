@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Manifest = void 0;
+exports.ManifestError = exports.Manifest = void 0;
 const lodash_1 = require("lodash");
+const kernel_1 = require("./kernel");
 class Manifest {
     _data;
     endpoint = '';
@@ -13,6 +14,7 @@ class Manifest {
         if ((0, lodash_1.has)(this._data, key)) {
             return (absolute ? this.endpoint : '') + this._data[key];
         }
+        throw new ManifestError(`${key} does not exists in the manifest`);
     }
     normalize() {
         return {
@@ -29,3 +31,6 @@ class Manifest {
     }
 }
 exports.Manifest = Manifest;
+class ManifestError extends kernel_1.KernelError {
+}
+exports.ManifestError = ManifestError;

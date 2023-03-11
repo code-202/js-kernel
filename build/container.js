@@ -30,9 +30,6 @@ class Container {
         if (denormalizer.isDenormalizable(service) && this._initializeData[key]) {
             service.denormalize(this._initializeData[key]);
         }
-        if (typeof service.initialization === 'function') {
-            service.initialization();
-        }
         if (aliases) {
             for (const alias of aliases) {
                 this.addAlias(alias, key);

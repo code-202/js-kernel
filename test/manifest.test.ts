@@ -1,5 +1,6 @@
 import { test, expect, afterAll, beforeAll } from '@jest/globals'
 import { Manifest } from '../src'
+import { ManifestError } from '../src/manifest'
 
 let manifest: Manifest
 beforeAll(() => {
@@ -19,7 +20,7 @@ test('normal', () => {
 test('undefined', () => {
     expect.assertions(1);
 
-    expect(manifest.get('unknown')).toBeUndefined()
+    return expect(() => manifest.get('unknown')).toThrow(ManifestError)
 })
 
 test('normalize', () => {
