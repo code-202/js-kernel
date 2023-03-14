@@ -1,5 +1,5 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
-import { has } from 'lodash'
+import has from 'lodash.has'
 import { KernelError } from './kernel'
 
 export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {

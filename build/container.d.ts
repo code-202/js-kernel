@@ -27,7 +27,6 @@ export declare class Container implements Interface {
     factories: Factory[];
     private initiators;
     private _initializeData;
-    constructor();
     add(key: string, service: any, aliases?: string[]): this;
     has(key: string): boolean;
     get(key: string): any;

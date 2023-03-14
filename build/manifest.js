@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManifestError = exports.Manifest = void 0;
-const lodash_1 = require("lodash");
+const lodash_has_1 = __importDefault(require("lodash.has"));
 const kernel_1 = require("./kernel");
 class Manifest {
     _data;
@@ -11,7 +14,7 @@ class Manifest {
         this.endpoint = endpoint;
     }
     get(key, absolute = true) {
-        if ((0, lodash_1.has)(this._data, key)) {
+        if ((0, lodash_has_1.default)(this._data, key)) {
             return (absolute ? this.endpoint : '') + this._data[key];
         }
         throw new ManifestError(`${key} does not exists in the manifest`);

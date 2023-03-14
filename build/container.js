@@ -1,8 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServiceAlreadyDefinedError = exports.NoServiceError = exports.NoDependencyError = exports.CircularDependenciesError = exports.AutoDependenceError = exports.AliasAlreadyDefinedError = exports.ContainerError = exports.Container = void 0;
-const mobx_1 = require("mobx");
-const lodash_1 = require("lodash");
+const lodash_has_1 = __importDefault(require("lodash.has"));
 const serializer_1 = require("@code-202/serializer");
 const kernel_1 = require("./kernel");
 class Container {
@@ -11,16 +13,6 @@ class Container {
     factories = [];
     initiators = [];
     _initializeData = {};
-    constructor() {
-        (0, mobx_1.makeObservable)(this, {
-            services: mobx_1.observable,
-            aliases: mobx_1.observable,
-            factories: mobx_1.observable,
-            keys: mobx_1.computed,
-            add: mobx_1.action,
-            addFactory: mobx_1.action,
-        });
-    }
     add(key, service, aliases) {
         if (this.has(key)) {
             throw new ServiceAlreadyDefinedError('Service ' + key + ' is already defined');
@@ -94,7 +86,7 @@ class Container {
         if (alias) {
             key = alias;
         }
-        return (0, lodash_1.has)(this.services, key);
+        return (0, lodash_has_1.default)(this.services, key);
     }
     get keys() {
         const keys = Object.keys(this.services);
@@ -111,20 +103,20 @@ class Container {
         return keys;
     }
     addAlias(alias, key) {
-        if ((0, lodash_1.has)(this.aliases, alias)) {
+        if ((0, lodash_has_1.default)(this.aliases, alias)) {
             throw new AliasAlreadyDefinedError('Alias ' + alias + ' is already defined : ' + this.getAlias(alias));
         }
         if (this.has(alias)) {
             throw new AliasAlreadyDefinedError('Alias ' + alias + ' is already defined');
         }
-        if (!(0, lodash_1.has)(this.services, key) && !this.hasFactory(key)) {
+        if (!(0, lodash_has_1.default)(this.services, key) && !this.hasFactory(key)) {
             throw new NoServiceError('Service or factory ' + key + ' is undefined');
         }
         this.aliases[alias] = key;
         return this;
     }
     getAlias(alias) {
-        if ((0, lodash_1.has)(this.aliases, alias)) {
+        if ((0, lodash_has_1.default)(this.aliases, alias)) {
             return this.aliases[alias];
         }
     }

@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Environment = void 0;
-const lodash_1 = require("lodash");
+const lodash_has_1 = __importDefault(require("lodash.has"));
 class Environment {
     data;
     constructor(defaults, env) {
@@ -11,7 +14,7 @@ class Environment {
         }
     }
     get(key) {
-        if ((0, lodash_1.has)(this.data, key)) {
+        if ((0, lodash_has_1.default)(this.data, key)) {
             return this.data[key];
         }
     }

@@ -1,5 +1,5 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
-import { has } from 'lodash'
+import has from 'lodash.has'
 
 export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
     get (key: string): string | undefined

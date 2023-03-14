@@ -1,5 +1,4 @@
-import { makeObservable, action, observable, computed } from 'mobx'
-import { has } from 'lodash'
+import has from 'lodash.has'
 import { Normalizable, Denormalizable, Normalizer, Denormalizer } from '@code-202/serializer'
 import { KernelError } from './kernel'
 
@@ -36,19 +35,6 @@ export class Container implements Interface
     public factories: Factory[] = []
     private initiators:Initiator[] = []
     private _initializeData: Record<string, any> = {}
-
-    constructor() {
-        makeObservable(this, {
-            services: observable,
-            aliases: observable,
-            factories: observable,
-
-            keys: computed,
-
-            add: action,
-            addFactory: action,
-        })
-    }
 
     add (key: string, service: any, aliases?: string[]): this {
         if (this.has(key)) {
