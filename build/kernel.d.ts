@@ -20,3 +20,4 @@ export interface Normalized {
 }
 export declare class KernelError extends Error {
 }
+//# sourceMappingURL=kernel.d.ts.map

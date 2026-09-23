@@ -20,3 +20,4 @@ const setKernel = (kernel, force = false) => {
     instance.kernel = kernel;
 };
 exports.setKernel = setKernel;
+//# sourceMappingURL=instance.js.map

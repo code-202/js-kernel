@@ -60,3 +60,4 @@ export declare class NoServiceError extends ContainerError {
 }
 export declare class ServiceAlreadyDefinedError extends ContainerError {
 }
+//# sourceMappingURL=container.d.ts.map

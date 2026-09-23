@@ -9,3 +9,4 @@ const createEmptyKernel = () => {
     return new kernel_1.Kernel(new container_1.Container(), new environment_1.Environment({}, {}), new manifest_1.Manifest({}, ''));
 };
 exports.createEmptyKernel = createEmptyKernel;
+//# sourceMappingURL=default.js.map

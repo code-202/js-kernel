@@ -17,3 +17,4 @@ export interface Normalized {
 }
 export declare class ManifestError extends KernelError {
 }
+//# sourceMappingURL=manifest.d.ts.map

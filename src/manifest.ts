@@ -3,21 +3,19 @@ import has from 'lodash.has'
 import { KernelError } from './kernel'
 
 export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
-    get (key: string, absolute?: boolean): string
+    get(key: string, absolute?: boolean): string
 }
 
 export class Manifest implements Interface {
     private _data: Record<string, string>
-    private endpoint : string = ''
+    private endpoint: string = ''
 
-    constructor (data: Record<string, string>, endpoint: string)
-    {
+    constructor(data: Record<string, string>, endpoint: string) {
         this._data = data
         this.endpoint = endpoint
     }
 
-    public get (key: string, absolute: boolean = true): string
-    {
+    public get(key: string, absolute: boolean = true): string {
         if (has(this._data, key)) {
             return (absolute ? this.endpoint : '') + this._data[key]
         }
@@ -25,16 +23,16 @@ export class Manifest implements Interface {
         throw new ManifestError(`${key} does not exists in the manifest`)
     }
 
-    public normalize (): Normalized {
-        return  {
+    public normalize(): Normalized {
+        return {
             data: this._data,
             endpoint: this.endpoint,
         }
     }
 
-    public denormalize (data: Normalized): this {
+    public denormalize(data: Normalized): this {
         for (const key in data.data) {
-            this._data[key] = data.data[key]
+            this._data[key] = data.data[key] as string
         }
 
         this.endpoint = data.endpoint
@@ -48,4 +46,4 @@ export interface Normalized {
     endpoint: string,
 }
 
-export class ManifestError extends KernelError {}
+export class ManifestError extends KernelError { }

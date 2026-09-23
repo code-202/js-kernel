@@ -36,3 +36,4 @@ exports.Kernel = Kernel;
 class KernelError extends Error {
 }
 exports.KernelError = KernelError;
+//# sourceMappingURL=kernel.js.map

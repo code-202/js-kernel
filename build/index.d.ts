@@ -9,3 +9,4 @@ import { Kernel } from './kernel';
 import * as ManifestComponent from './manifest';
 import { Manifest } from './manifest';
 export { ContainerComponent, Container, createEmptyKernel, EnvironmentComponent, Environment, getKernel, KernelComponent, Kernel, ManifestComponent, Manifest, setKernel, };
+//# sourceMappingURL=index.d.ts.map

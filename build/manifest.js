@@ -37,3 +37,4 @@ exports.Manifest = Manifest;
 class ManifestError extends kernel_1.KernelError {
 }
 exports.ManifestError = ManifestError;
+//# sourceMappingURL=manifest.js.map

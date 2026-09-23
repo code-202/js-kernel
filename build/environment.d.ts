@@ -11,3 +11,4 @@ export declare class Environment<K extends string> implements Interface {
 }
 export interface Normalized extends Partial<Record<string, string>> {
 }
+//# sourceMappingURL=environment.d.ts.map
