@@ -1,4 +1,4 @@
-import { test, expect, afterAll, beforeAll } from '@jest/globals'
+import { test, expect, afterAll, beforeAll, jest } from '@jest/globals'
 import { Environment } from '../src'
 
 type KEYS = 'ENDPOINT' | 'API_KEY' | 'DEBUG' | 'VERBOSITY'
@@ -54,4 +54,29 @@ test('denormalize', () => {
     expect(environment.get('DEBUG')).toBe('true')
     expect(environment.get('VERBOSITY')).toBe('true')
     expect(environment.get('API_KEY')).toBe('1234567890')
+})
+
+test('context', () => {
+    environment = new Environment<KEYS>({
+        'DEBUG': 'false',
+        'VERBOSITY': 'true',
+    }, {
+        'ENDPOINT': 'https://the-endpoint',
+        'ENDPOINT.node': 'https://the-endpoint-for-node',
+        'DEBUG.browser': 'true',
+    })
+
+    const mock = jest.spyOn(environment, 'context', 'get')
+    mock.mockReturnValue('node')
+
+    expect(environment.get('ENDPOINT')).toBe('https://the-endpoint-for-node')
+    expect(environment.get('DEBUG')).toBe('false')
+    expect(mock).toHaveBeenCalledTimes(2)
+
+
+    mock.mockReturnValue('browser')
+
+    expect(environment.get('ENDPOINT')).toBe('https://the-endpoint')
+    expect(environment.get('DEBUG')).toBe('true')
+    expect(mock).toHaveBeenCalledTimes(4)
 })

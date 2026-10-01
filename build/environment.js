@@ -14,6 +14,10 @@ class Environment {
         }
     }
     get(key) {
+        const contextKey = key + '.' + this.context;
+        if ((0, lodash_has_1.default)(this.data, contextKey)) {
+            return this.data[contextKey];
+        }
         if ((0, lodash_has_1.default)(this.data, key)) {
             return this.data[key];
         }
@@ -26,6 +30,9 @@ class Environment {
             this.data[key] = data[key];
         }
         return this;
+    }
+    get context() {
+        return typeof process !== 'undefined' && process.versions != null && process.versions.node != null ? 'node' : 'browser';
     }
 }
 exports.Environment = Environment;
