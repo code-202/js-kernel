@@ -80,3 +80,26 @@ test('context', () => {
     expect(environment.get('DEBUG')).toBe('true')
     expect(mock).toHaveBeenCalledTimes(4)
 })
+
+test('context-with-context', () => {
+    environment = new Environment<KEYS>({
+        'DEBUG': 'false',
+        'VERBOSITY': 'true',
+    }, {
+        'ENDPOINT': 'https://the-endpoint',
+        'ENDPOINT.node': 'https://the-endpoint-for-node',
+        'DEBUG.browser': 'true',
+    })
+
+    expect(environment.normalize({ browser: true })).toStrictEqual({
+        'ENDPOINT': 'https://the-endpoint',
+        'DEBUG': 'true',
+        'VERBOSITY': 'true',
+    })
+
+    expect(environment.normalize({ node: true })).toStrictEqual({
+        'ENDPOINT': 'https://the-endpoint-for-node',
+        'DEBUG': 'false',
+        'VERBOSITY': 'true',
+    })
+})

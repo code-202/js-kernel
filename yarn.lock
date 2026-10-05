@@ -288,10 +288,10 @@
     hashery "^1.5.1"
     keyv "^5.6.0"
 
-"@code-202/serializer@^1.0.0":
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/@code-202/serializer/-/serializer-1.1.0.tgz#0ef57e658973c0fcaa522d1118381d82159d40da"
-  integrity sha512-oQePdV0koBauIX62STDlZkyk/Z6s/n0X1JB3XGL3R7UYyfSbM0fdPfHlwGbBwFVoX6+XU6Ag8Evab6Y2KDdDxA==
+"@code-202/serializer@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/@code-202/serializer/-/serializer-1.1.1.tgz#e8496d83e9dce0974a1093c5d098d69dbde8f052"
+  integrity sha512-Bi2PUUOOs+7okHCQd+cFFET5oUr+4nnNT4cS4LmdAIel7ZFLVNNibzi+IhZle8cusSaKGiIbehLn8J8LFx42PA==
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
