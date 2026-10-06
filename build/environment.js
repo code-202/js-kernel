@@ -14,8 +14,8 @@ class Environment {
             this.data[key] = env[key];
         }
     }
-    get(key) {
-        const contextKey = key + '.' + this.context;
+    get(key, forcedContext) {
+        const contextKey = key + '.' + (forcedContext || this.context);
         if ((0, lodash_has_1.default)(this.data, contextKey)) {
             return this.data[contextKey];
         }

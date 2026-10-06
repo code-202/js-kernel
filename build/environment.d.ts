@@ -9,7 +9,7 @@ export declare class Environment<K extends string> implements Interface {
     private data;
     private forcedContext?;
     constructor(defaults: Partial<Record<K, string>>, env: Record<string, string>);
-    get(key: K): string | undefined;
+    get(key: K, forcedContext?: Context): string | undefined;
     normalize(context?: NormalizerContext): Normalized;
     denormalize(data: Normalized): this;
     get context(): Context;

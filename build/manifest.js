@@ -19,10 +19,10 @@ class Manifest {
         }
         throw new ManifestError(`${key} does not exists in the manifest`);
     }
-    normalize() {
+    normalize(context) {
         return {
             data: this._data,
-            endpoint: this.endpoint,
+            endpoint: context?.endpoint || this.endpoint,
         };
     }
     denormalize(data) {

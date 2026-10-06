@@ -1,6 +1,7 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
 import has from 'lodash.has'
 import { KernelError } from './kernel'
+import { NormalizerContext } from '@code-202/serializer/build/normalizer'
 
 export interface Interface extends Normalizable<Normalized>, Denormalizable<Normalized> {
     get(key: string, absolute?: boolean): string
@@ -23,10 +24,10 @@ export class Manifest implements Interface {
         throw new ManifestError(`${key} does not exists in the manifest`)
     }
 
-    public normalize(): Normalized {
+    public normalize(context?: NormalizerContext): Normalized {
         return {
             data: this._data,
-            endpoint: this.endpoint,
+            endpoint: context?.endpoint || this.endpoint,
         }
     }
 

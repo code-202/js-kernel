@@ -24,10 +24,18 @@ test('undefined', () => {
 })
 
 test('normalize', () => {
-    expect.assertions(1)
+    expect.assertions(2)
 
     expect(manifest.normalize()).toStrictEqual({
         'endpoint': 'https://the-endpoint',
+        'data': {
+            'app.css': '/dist/css/app.348b54047dc4eeef2a98.css',
+            'app.js': '/dist/js/app.348b54047dc4eeef2a98.js',
+        },
+    })
+
+    expect(manifest.normalize({ endpoint: 'https://other-endpoint' })).toStrictEqual({
+        'endpoint': 'https://other-endpoint',
         'data': {
             'app.css': '/dist/css/app.348b54047dc4eeef2a98.css',
             'app.js': '/dist/js/app.348b54047dc4eeef2a98.js',

@@ -22,8 +22,8 @@ export class Environment<K extends string> implements Interface {
         }
     }
 
-    public get(key: K): string | undefined {
-        const contextKey = key + '.' + this.context
+    public get(key: K, forcedContext?: Context): string | undefined {
+        const contextKey = key + '.' + (forcedContext || this.context)
 
         if (has(this.data, contextKey)) {
             return this.data[contextKey as K]

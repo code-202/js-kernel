@@ -69,6 +69,11 @@ test('context', () => {
     const mock = jest.spyOn(environment, 'context', 'get')
     mock.mockReturnValue('node')
 
+    expect(environment.get('ENDPOINT', 'browser')).toBe('https://the-endpoint')
+    expect(environment.get('ENDPOINT', 'node')).toBe('https://the-endpoint-for-node')
+    expect(environment.get('DEBUG', 'browser')).toBe('true')
+    expect(environment.get('DEBUG', 'node')).toBe('false')
+
     expect(environment.get('ENDPOINT')).toBe('https://the-endpoint-for-node')
     expect(environment.get('DEBUG')).toBe('false')
     expect(mock).toHaveBeenCalledTimes(2)
